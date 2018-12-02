@@ -1,0 +1,6 @@
+framework module Pods_TerrainAR {
+  umbrella header "Pods-TerrainAR-umbrella.h"
+
+  export *
+  module * { export * }
+}

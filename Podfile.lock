@@ -1,0 +1,29 @@
+PODS:
+  - MapboxMobileEvents (0.5.1)
+  - MapboxSceneKit (0.1.0):
+    - MapboxMobileEvents (~> 0.4)
+
+DEPENDENCIES:
+  - MapboxMobileEvents
+  - MapboxSceneKit (from `https://github.com/mapbox/mapbox-scenekit.git`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - MapboxMobileEvents
+
+EXTERNAL SOURCES:
+  MapboxSceneKit:
+    :git: https://github.com/mapbox/mapbox-scenekit.git
+
+CHECKOUT OPTIONS:
+  MapboxSceneKit:
+    :commit: 1e26d4c185d6383368eb2ff9580604604fc72c8a
+    :git: https://github.com/mapbox/mapbox-scenekit.git
+
+SPEC CHECKSUMS:
+  MapboxMobileEvents: bacf6e176d65b4f3cc5280677183856a81216117
+  MapboxSceneKit: 5315bddb4369225b8aa95c5b873add6e4ca25648
+
+PODFILE CHECKSUM: e7508ea64b0a4682df919bd3ac932809f0eb4116
+
+COCOAPODS: 1.5.3
