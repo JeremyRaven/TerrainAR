@@ -180,26 +180,31 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     //MARK: Prepare for segue
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-      
-        if coordinatesArray!.count < 2 {
-            
-            let alertVC = UIAlertController(title: "Attention", message: "Requires user to place two positional markers", preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "Okay", style: .default, handler: nil)
-            alertVC.addAction(okAction)
-            
-            self.present(alertVC, animated: true, completion: nil)
-            
-        } else {
-            
-            if segue.destination is ARViewController {
+        
+        // Check View Controller desination
+        if segue.destination is ARViewController {
+            if coordinatesArray!.count < 2 {
                 
-                let vc = segue.destination as? ARViewController
+                // Create alert if coordinatesArray < 2
+                let alertVC = UIAlertController(title: "Attention", message: "Requires user to place two positional markers", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "Okay", style: .default, handler: nil)
+                alertVC.addAction(okAction)
+                self.present(alertVC, animated: true, completion: nil)
                 
+            } else {
+                
+                // Otherwise pass coordinatesArray to 
+                let vcAR = segue.destination as? ARViewController
                 // Double check array is not empty
                 if !coordinatesArray!.isEmpty {
-                vc?.coordinatesArray = coordinatesArray!
+                    vcAR?.ARcoordinatesArray = coordinatesArray!
                 } else {return}
             }
+        } else {
+            let vcTV = segue.destination as? TableViewController
+            if !coordinatesArray!.isEmpty {
+                vcTV?.favCoordinatesArray = coordinatesArray!
+            } else {return}
         }
     }
     

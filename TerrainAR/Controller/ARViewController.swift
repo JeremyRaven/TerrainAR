@@ -18,7 +18,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
     
     @IBOutlet weak var sceneView: ARSCNView!
     private var hud :MBProgressHUD!
-    var coordinatesArray: [CLLocationCoordinate2D]? = []
+    var ARcoordinatesArray: [CLLocationCoordinate2D]? = []
     private var newAngleY :Float = 0.0
     private var currentAngleY :Float = 0.0
     private var localTranslatePosition :CGPoint!
@@ -58,13 +58,13 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
     // Prepare coordinate array for TerrainNode
     private func handleCoordinatesArray() {
         
-        if !coordinatesArray!.isEmpty {
+        if !ARcoordinatesArray!.isEmpty {
             
-            minLat = coordinatesArray![0].latitude
-            minLong = coordinatesArray![0].longitude
+            minLat = ARcoordinatesArray![0].latitude
+            minLong = ARcoordinatesArray![0].longitude
 
-            maxLat = coordinatesArray![1].latitude
-            maxLong = coordinatesArray![1].longitude
+            maxLat = ARcoordinatesArray![1].latitude
+            maxLong = ARcoordinatesArray![1].longitude
             
             // Organise min/max values
             if minLat > maxLat {
@@ -296,6 +296,19 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
 //
 //
 //    }
+    
+    //MARK: Prepare for segue
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        // Check View Controller desination
+        if segue.destination is TableViewController {
+            
+            let vcTV = segue.destination as? TableViewController
+            if !ARcoordinatesArray!.isEmpty {
+                vcTV?.favCoordinatesArray = ARcoordinatesArray!
+            } else {return}
+        }
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
