@@ -10,7 +10,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Map View Controller-->
+        <!--Map View-->
         <scene sceneID="MD1-oF-VgX">
             <objects>
                 <viewController id="TVG-OV-ebz" customClass="MapViewController" customModule="TerrainAR" customModuleProvider="target" sceneMemberID="viewController">
@@ -95,6 +95,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="kqy-Oa-FpN"/>
                     </view>
+                    <navigationItem key="navigationItem" title="Map View" id="lss-g5-rlc"/>
                     <connections>
                         <outlet property="mapTypeSegmetedControl" destination="rNZ-rL-Atu" id="h0N-vZ-70C"/>
                         <outlet property="mapView" destination="clr-nt-QWo" id="bEZ-CI-tv0"/>
@@ -102,7 +103,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rmS-OL-sr7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="802.39999999999998" y="134.48275862068968"/>
+            <point key="canvasLocation" x="764" y="60"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="jen-bB-qUy">
@@ -146,7 +147,7 @@
                                 </constraints>
                                 <state key="normal" image="BackArrowImage"/>
                                 <connections>
-                                    <segue destination="TVG-OV-ebz" kind="presentation" modalTransitionStyle="flipHorizontal" id="Cif-MT-nj9"/>
+                                    <segue destination="TVG-OV-ebz" kind="presentation" modalTransitionStyle="flipHorizontal" id="Yfr-ia-80Y"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -173,7 +174,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GsC-10-Djm" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1836" y="134"/>
+            <point key="canvasLocation" x="1855" y="60"/>
         </scene>
         <!--Table View Controller-->
         <scene sceneID="ygX-LW-foa">
@@ -189,7 +190,19 @@
                                 <view key="tableHeaderView" contentMode="scaleToFill" id="42y-Hx-iQP">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Favourites" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tVr-4K-pV6">
+                                            <rect key="frame" x="148" y="15" width="79" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstItem="tVr-4K-pV6" firstAttribute="top" secondItem="42y-Hx-iQP" secondAttribute="top" constant="15" id="TNd-1w-KcQ"/>
+                                        <constraint firstItem="tVr-4K-pV6" firstAttribute="centerX" secondItem="42y-Hx-iQP" secondAttribute="centerX" id="hwB-A4-5cs"/>
+                                    </constraints>
                                 </view>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" id="FP6-zG-a7B">
@@ -206,13 +219,26 @@
                                     <outlet property="delegate" destination="Mx2-Yz-3vG" id="UEw-uj-YnH"/>
                                 </connections>
                             </tableView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZuJ-ci-IuU">
+                                <rect key="frame" x="167.5" y="614" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="E1k-mt-1yA"/>
+                                    <constraint firstAttribute="height" constant="40" id="NcO-WX-s3K"/>
+                                </constraints>
+                                <state key="normal" image="AddImage"/>
+                                <connections>
+                                    <action selector="addFavourites:" destination="Mx2-Yz-3vG" eventType="touchUpInside" id="dV0-DD-rJs"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="ZuJ-ci-IuU" firstAttribute="centerX" secondItem="Bjp-nC-HLk" secondAttribute="centerX" id="5Id-iu-qYL"/>
                             <constraint firstItem="b8b-sQ-NdN" firstAttribute="bottom" secondItem="rqB-IT-zEA" secondAttribute="bottom" constant="61" id="9lW-2z-242"/>
                             <constraint firstItem="rqB-IT-zEA" firstAttribute="leading" secondItem="b8b-sQ-NdN" secondAttribute="leading" id="Dgj-MW-kKJ"/>
                             <constraint firstItem="rqB-IT-zEA" firstAttribute="top" secondItem="b8b-sQ-NdN" secondAttribute="top" id="LEH-kG-cde"/>
                             <constraint firstItem="rqB-IT-zEA" firstAttribute="trailing" secondItem="b8b-sQ-NdN" secondAttribute="trailing" id="VIN-px-sQj"/>
+                            <constraint firstItem="b8b-sQ-NdN" firstAttribute="bottom" secondItem="ZuJ-ci-IuU" secondAttribute="bottom" constant="13" id="poh-o4-YlM"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="b8b-sQ-NdN"/>
                     </view>
@@ -227,6 +253,7 @@
     </scenes>
     <resources>
         <image name="ARAppleImage" width="187" height="102"/>
+        <image name="AddImage" width="102" height="102"/>
         <image name="BackArrowImage" width="102" height="102"/>
         <image name="ClearImage" width="102" height="102"/>
         <image name="FavouritesImage" width="102" height="102"/>
@@ -236,4 +263,5 @@
     <inferredMetricsTieBreakers>
         <segue reference="d10-4d-Tbg"/>
     </inferredMetricsTieBreakers>
+    <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>
