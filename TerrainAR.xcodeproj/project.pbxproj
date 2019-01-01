@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		A38147BF4CE8D900AB66F149 /* Pods_TerrainAR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB5464DD48CC271CC901B39F /* Pods_TerrainAR.framework */; };
 		DA6C83FE21B3B650000B4A5E /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C83FD21B3B650000B4A5E /* TableViewController.swift */; };
+		DAAB318C21DAFF5C006B3DC6 /* Favourites.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAAB318B21DAFF5C006B3DC6 /* Favourites.swift */; };
 		DAF8653121AD30A3005E57D2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAF8653021AD30A3005E57D2 /* AppDelegate.swift */; };
 		DAF8653321AD30A3005E57D2 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DAF8653221AD30A3005E57D2 /* art.scnassets */; };
 		DAF8653821AD30A3005E57D2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DAF8653621AD30A3005E57D2 /* Main.storyboard */; };
@@ -24,6 +25,7 @@
 		96706DB9253FE0589004788B /* Pods-TerrainAR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TerrainAR.release.xcconfig"; path = "Pods/Target Support Files/Pods-TerrainAR/Pods-TerrainAR.release.xcconfig"; sourceTree = "<group>"; };
 		BB5464DD48CC271CC901B39F /* Pods_TerrainAR.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TerrainAR.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA6C83FD21B3B650000B4A5E /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
+		DAAB318B21DAFF5C006B3DC6 /* Favourites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favourites.swift; sourceTree = "<group>"; };
 		DAF8652D21AD30A3005E57D2 /* TerrainAR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TerrainAR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAF8653021AD30A3005E57D2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DAF8653221AD30A3005E57D2 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -77,6 +79,7 @@
 				DAF8654921AD31BB005E57D2 /* MBProgressHUD.h */,
 				DAF8654A21AD31BC005E57D2 /* MBProgressHUD.m */,
 				DAF8653021AD30A3005E57D2 /* AppDelegate.swift */,
+				DAAB318B21DAFF5C006B3DC6 /* Favourites.swift */,
 			);
 			path = "Support Files";
 			sourceTree = "<group>";
@@ -252,6 +255,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DAAB318C21DAFF5C006B3DC6 /* Favourites.swift in Sources */,
 				DA6C83FE21B3B650000B4A5E /* TableViewController.swift in Sources */,
 				DAF8654521AD317A005E57D2 /* MapViewController.swift in Sources */,
 				DAF8654B21AD31BC005E57D2 /* MBProgressHUD.m in Sources */,

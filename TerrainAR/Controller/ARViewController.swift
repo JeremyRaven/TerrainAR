@@ -17,6 +17,8 @@ import CoreLocation
 class ARViewController: UIViewController, ARSCNViewDelegate {
     
     @IBOutlet weak var sceneView: ARSCNView!
+    @IBOutlet weak var lockedButtonState: UIButton!
+    
     private var hud :MBProgressHUD!
     var ARcoordinatesArray: [CLLocationCoordinate2D]? = []
     private var newAngleY :Float = 0.0
@@ -26,7 +28,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
     var minLong: Double! = 0.0000000
     var maxLat: Double! = 0.0000000
     var maxLong: Double! = 0.0000000
-    @IBOutlet weak var lockedButtonState: UIButton!
+    let scaleMult: Float = 1.5
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -104,7 +106,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         let terrainNode = TerrainNode(minLat: minLat, maxLat: maxLat, minLon: minLong, maxLon: maxLong)
         terrainNode.name = "terrain"
         let scale = Float(0.333 * hitResult.distance) / terrainNode.boundingSphere.radius
-        terrainNode.transform = SCNMatrix4MakeScale(scale, scale*1.5, scale)
+        terrainNode.transform = SCNMatrix4MakeScale(scale, scale * scaleMult, scale)
         terrainNode.position = SCNVector3(hitResult.worldTransform.columns.3.x, hitResult.worldTransform.columns.3.y, hitResult.worldTransform.columns.3.z)
         
         // set the material
@@ -317,7 +319,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = .horizontal
         
-        // sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
+        sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
         
         // Run the view's session
         sceneView.session.run(configuration)
