@@ -186,7 +186,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             if coordinatesArray!.count < 2 {
                 
                 // Create alert if coordinatesArray < 2
-                let alertVC = UIAlertController(title: "Attention", message: "Requires user to place two positional markers", preferredStyle: .alert)
+                let alertVC = UIAlertController(title: "Wait", message: "You need to place two pins first", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "Okay", style: .default, handler: nil)
                 alertVC.addAction(okAction)
                 self.present(alertVC, animated: true, completion: nil)

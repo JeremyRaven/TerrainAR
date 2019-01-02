@@ -18,6 +18,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
     
     @IBOutlet weak var sceneView: ARSCNView!
     @IBOutlet weak var lockedButtonState: UIButton!
+    @IBOutlet weak var lockUnlock: UILabel!
     
     private var hud :MBProgressHUD!
     var ARcoordinatesArray: [CLLocationCoordinate2D]? = []
@@ -90,12 +91,14 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
             let image = UIImage(named: "LockedImage")
             lockedButtonState.setImage(image, for: UIControl.State.selected)
             lockedButtonState.isSelected = true
+            lockUnlock.text = "Unlock"
         }
         
         else if lockedButtonState.isSelected {
             let image = UIImage(named: "UnlockedImage")
             lockedButtonState.setImage(image, for: UIControl.State.normal)
             lockedButtonState.isSelected = false
+            lockUnlock.text = "Lock"
         }
         
     }
@@ -289,6 +292,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
                 
                 self.hud.label.text = "Plane Detected"
                 self.hud.hide(animated: true, afterDelay: 1.0)
+                self.sceneView.debugOptions = []
             }
         }
         
