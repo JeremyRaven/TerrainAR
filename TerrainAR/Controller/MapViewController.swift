@@ -12,20 +12,18 @@ import MapKit
 
 class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UIGestureRecognizerDelegate {
     
+    @IBOutlet weak var blurEffect: UIVisualEffectView!
     @IBOutlet weak var mapTypeSegmetedControl: UISegmentedControl!
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var logoImage: UIImageView!
+    @IBOutlet weak var close: UIButton!
+    @IBOutlet weak var copyright: UILabel!
+    @IBOutlet weak var forMoreInfo: UILabel!
+    
+    
     var zoom = true
     var rawCoordinates: CLLocationCoordinate2D!
     var coordinatesArray: [CLLocationCoordinate2D]? = []
-    
-//    var coordinateArray: [CLLocationCoordinate2D] = []
-//
-//    if latarray.count == lonarray.count {
-//    for var i = 0; i < latarray.count; i++ {
-//    let destination = CLLocationCoordinate2DMake(latarray[i], lonarray[i])
-//    coordinateArray.append(destination)
-//    }
-//    }
 
     private let locationManager = CLLocationManager()
     
@@ -47,6 +45,24 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         
         registerGestureRecognizers()
         
+    }
+    
+    @IBAction func closeWindow(_ sender: Any) {
+        
+        self.blurEffect.isHidden = true
+        logoImage.isHidden = true
+        close.isHidden = true
+        copyright.isHidden = true
+        forMoreInfo.isHidden = true
+    }
+    
+    @IBAction func infomation(_ sender: UIButton) {
+        
+        self.blurEffect.isHidden = false
+        logoImage.isHidden = false
+        close.isHidden = false
+        copyright.isHidden = false
+        forMoreInfo.isHidden = false
     }
     
     // Clear Coordinates Array and Annotations from view
