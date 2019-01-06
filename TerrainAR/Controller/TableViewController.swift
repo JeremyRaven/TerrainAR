@@ -41,12 +41,14 @@ class TableViewController: UIViewController {
         }
     }
     
+//MARK: Add, Save and load favourites
+
     @IBAction func addFavourites(_ sender: UIButton) {
         
-        // Make sure favCoordinatesArray is not empty
+        //Make sure favCoordinatesArray is not empty
         if favCoordinatesArray[0].latitude == 0.0 {
             
-            // Create alert if favCoordinatesArray < 2
+            //Create alert if favCoordinatesArray < 2
             let alertVC = UIAlertController(title: "Wait", message: "You cannot add a new favourite without coordinates", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "Okay", style: .default, handler: nil)
             alertVC.addAction(okAction)
@@ -106,10 +108,10 @@ class TableViewController: UIViewController {
         }
     }
     
-    //MARK: Prepare for segue
+//MARK: Prepare for segue
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        // Check View Controller desination
+        //Check View Controller desination
         if segue.destination is ARViewController {
             
             if favCoordinatesArray[0].latitude == 0.0 {
@@ -121,7 +123,7 @@ class TableViewController: UIViewController {
                 
             } else {
                 
-                // Otherwise pass favCoordinatesArray to
+                //Otherwise pass favCoordinatesArray to
                 let vcAR = segue.destination as? ARViewController
                 // Double check array is not empty
                 if favCoordinatesArray[0].latitude != 0.0 {

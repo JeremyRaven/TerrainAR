@@ -10,8 +10,8 @@ import UIKit
 import CoreLocation
 import MapKit
 
-class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UIGestureRecognizerDelegate {
-    
+class MapViewController: UIViewController {
+ 
     @IBOutlet weak var blurEffect: UIVisualEffectView!
     @IBOutlet weak var mapTypeSegmetedControl: UISegmentedControl!
     @IBOutlet weak var mapView: MKMapView!
@@ -20,11 +20,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     @IBOutlet weak var copyright: UILabel!
     @IBOutlet weak var forMoreInfo: UILabel!
     
-    
+    let defaults = UserDefaults.standard
     var zoom = true
     var rawCoordinates: CLLocationCoordinate2D!
-    var coordinatesArray: [CLLocationCoordinate2D]? = []
-
+    var coordinatesArray: [CLLocationCoordinate2D] = []
+    var placeHolderCoordsArray: [CLLocationCoordinate2D] = []
     private let locationManager = CLLocationManager()
     
     override func viewDidLoad() {
@@ -42,11 +42,34 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         self.mapView.showsUserLocation = true
         
         self.mapTypeSegmetedControl.addTarget(self, action: #selector(mapTypeChanged), for: .valueChanged)
-        
+                
         registerGestureRecognizers()
+    }
+    
+    //Show alert for app help
+    func alertHelp() {
+        
+        let dontShowAlert = defaults.bool(forKey: "showAlertForHelp")
+        
+        if !dontShowAlert {
+            
+            let alertVC = UIAlertController(title: "To use", message: "Tap screen to place two pins", preferredStyle: .alert)
+            let ShowAction = UIAlertAction(title: "Okay", style: .default, handler: nil)
+            let dontShowAction = UIAlertAction(title: "Dont show again", style: .default, handler: {action in self.dontShowAlert()})
+            alertVC.addAction(ShowAction)
+            alertVC.addAction(dontShowAction)
+            self.present(alertVC, animated: true, completion: nil)
+        }else{return}
         
     }
     
+    //Dont show help by setting UserDefaults
+    func dontShowAlert() {
+        
+        defaults.set(true, forKey: "showAlertForHelp")
+    }
+    
+    //Close Info window
     @IBAction func closeWindow(_ sender: Any) {
         
         self.blurEffect.isHidden = true
@@ -56,6 +79,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         forMoreInfo.isHidden = true
     }
     
+    //Open Info window
     @IBAction func infomation(_ sender: UIButton) {
         
         self.blurEffect.isHidden = false
@@ -65,38 +89,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         forMoreInfo.isHidden = false
     }
     
-    // Clear Coordinates Array and Annotations from view
-    @IBAction func clearCoordinates() {
-        
-        coordinatesArray?.removeAll()
-        let allAnnotations = self.mapView.annotations
-        self.mapView.removeAnnotations(allAnnotations)
-        
-    }
-    
-    //MARK: Gesture Recognizer
-    private func registerGestureRecognizers() {
-        
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapped))
-        self.mapView.addGestureRecognizer(tapGestureRecognizer)
-        
-    }
-    
-    // Tapped gesture - build coordinatesArray
-    @objc func tapped(recognizer :UIGestureRecognizer) {
-        
-        let touchPoint = recognizer.location(in: self.mapView)
-        rawCoordinates = self.mapView.convert(touchPoint, toCoordinateFrom: self.mapView)
-        
-        if (coordinatesArray?.count)! < 2 {
-            coordinatesArray?.append(rawCoordinates)
-        } else { return }
-        
-        createPointAnnotation(rawCoords: rawCoordinates)
-
-    }
-    
-    //MARK: Create Annotations
+//MARK: Annotations
     func createPointAnnotation(rawCoords: CLLocationCoordinate2D){
         
         let annotation = MKPointAnnotation()
@@ -104,8 +97,17 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         mapView.addAnnotation(annotation)
         
     }
+
+    // Clear Coordinates Array and Annotations from view
+    @IBAction func clearCoordinates() {
+        
+        coordinatesArray.removeAll()
+        let allAnnotations = self.mapView.annotations
+        self.mapView.removeAnnotations(allAnnotations)
+        
+    }
     
-    //MARK: Handle Segmented Controller
+//MARK: Handle Segmented Controller
     @objc func mapTypeChanged(segmentedControl: UISegmentedControl) {
         
         switch(segmentedControl.selectedSegmentIndex) {
@@ -121,41 +123,25 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         }
     }
     
-    func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
-        
-        if zoom {
-            let region = MKCoordinateRegion(center: mapView.userLocation.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-            mapView.setRegion(region, animated: true)
-        }
-        zoom = false
-    }
+//MARK: Reverse Geocoding
     
-    //MARK: Reverse Geocoding
-    // Build Alert view
+    // Build AlertView
     @IBAction func showAddAddressView() {
         
         let alertVC = UIAlertController(title: "Add Address", message: nil, preferredStyle: .alert)
-        
         alertVC.addTextField { textField in
-            
         }
-        
         let okAction = UIAlertAction(title: "Ok", style: .default) { action in
             
             if let textField = alertVC.textFields?.first {
                 
-                // reverse geocode the address
                 self.reverseGeocode(address :textField.text!)
-                
             }
         }
-        
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { action in
-            
         }
         alertVC.addAction(okAction)
         alertVC.addAction(cancelAction)
-        
         self.present(alertVC, animated: true, completion: nil)
     }
     
@@ -163,45 +149,30 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     private func reverseGeocode(address :String) {
         
         let geoCoder = CLGeocoder()
-        
         geoCoder.geocodeAddressString(address) { (placemarks,error) in
             
             if let error = error {
                 print(error.localizedDescription)
                 return
             }
-            
             guard let placemarks = placemarks,
                 let placemark = placemarks.first else {
-                    return
+                return
             }
-            
             self.addPlacemarkToMap(placemark :placemark)
-            
         }
     }
     
-    // Add Annotation to mapView
-    private func addPlacemarkToMap(placemark :CLPlacemark) {
-        
-        let coordinate = placemark.location?.coordinate
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = coordinate!
-        self.mapView.addAnnotation(annotation)
-        
-        // Zoom to the annotation location
-        let region = MKCoordinateRegion(center: annotation.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
-        self.mapView.setRegion(region, animated: true)
-    }
+//MARK: Prepare for segue
     
-    //MARK: Prepare for segue
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        // Check View Controller desination
+        //Check View Controller desination
         if segue.destination is ARViewController {
-            if coordinatesArray!.count < 2 {
+            
+            //Create alertVC if coordinatesArray < 2
+            if coordinatesArray.count < 2 {
                 
-                // Create alert if coordinatesArray < 2
                 let alertVC = UIAlertController(title: "Wait", message: "You need to place two pins first", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "Okay", style: .default, handler: nil)
                 alertVC.addAction(okAction)
@@ -209,20 +180,92 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 
             } else {
                 
-                // Otherwise pass coordinatesArray to 
+                //Otherwise pass coordinatesArray to
                 let vcAR = segue.destination as? ARViewController
-                // Double check array is not empty
-                if !coordinatesArray!.isEmpty {
-                    vcAR?.ARcoordinatesArray = coordinatesArray!
-                } else {return}
+                //Double check array is not empty
+                guard !coordinatesArray.isEmpty else {return}
+                vcAR?.ARcoordinatesArray = coordinatesArray
             }
         } else {
             let vcTV = segue.destination as? TableViewController
-            if !coordinatesArray!.isEmpty {
-                vcTV?.favCoordinatesArray = coordinatesArray!
-            } else {return}
+            guard !coordinatesArray.isEmpty else {return}
+            vcTV?.favCoordinatesArray = coordinatesArray
         }
     }
+}
+
+//MARK: Gesture Recognizer
+extension MapViewController: UIGestureRecognizerDelegate{
+
+    private func registerGestureRecognizers() {
+        
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapped))
+        self.mapView.addGestureRecognizer(tapGestureRecognizer)
+        
+    }
     
+    // Tapped gesture - build coordinatesArray
+    @objc func tapped(recognizer :UIGestureRecognizer) {
+        
+        let touchPoint = recognizer.location(in: self.mapView)
+        rawCoordinates = self.mapView.convert(touchPoint, toCoordinateFrom: self.mapView)
+        
+        if (coordinatesArray.count) < 2 {
+            coordinatesArray.append(rawCoordinates)
+        } else { return }
+        
+        createPointAnnotation(rawCoords: rawCoordinates)
+        
+    }
+}
+
+//MARK: Update locations
+extension MapViewController: CLLocationManagerDelegate {
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        //If not empty (else) use placeHolderCoordsArray
+        guard placeHolderCoordsArray.isEmpty else{
+            
+            let coordinations = CLLocationCoordinate2D(latitude: placeHolderCoordsArray[0].latitude,longitude: placeHolderCoordsArray[0].longitude)
+            let span = MKCoordinateSpan(latitudeDelta: 0.2,longitudeDelta: 0.2)
+            let region = MKCoordinateRegion(center: coordinations, span: span)
+            
+            mapView.setRegion(region, animated: true)
+            locationManager.stopUpdatingLocation()
+            return
+            }
+        
+        //If empty use coordinates from user location
+            if let location = locations.first {
+                
+                let coordinations = CLLocationCoordinate2D(latitude: location.coordinate.latitude,longitude: location.coordinate.longitude)
+                let span = MKCoordinateSpan(latitudeDelta: 0.01,longitudeDelta: 0.01)
+                let region = MKCoordinateRegion(center: coordinations, span: span)
+                
+                mapView.setRegion(region, animated: true)
+                locationManager.stopUpdatingLocation()
+                alertHelp()
+                
+            }
+        }
+    }
+
+extension MapViewController: MKMapViewDelegate {
+
+//MARK: Place annotations
+
+    //Add Annotation to mapView
+    private func addPlacemarkToMap(placemark :CLPlacemark) {
+        
+        let coordinate = placemark.location?.coordinate
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = coordinate!
+        self.mapView.addAnnotation(annotation)
+        
+        //Zoom to the annotation location
+        let region = MKCoordinateRegion(center: annotation.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
+        self.mapView.setRegion(region, animated: true)
+    }
 }
 

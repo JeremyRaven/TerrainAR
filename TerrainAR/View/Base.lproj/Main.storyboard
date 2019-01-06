@@ -216,9 +216,8 @@
                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="LE9-gT-CPl">
+                                        <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TerrainAR_Logo_trans" translatesAutoresizingMaskIntoConstraints="NO" id="LE9-gT-CPl">
                                             <rect key="frame" x="103" y="259.5" width="169" height="128"/>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="128" id="E3j-k2-NBe"/>
                                                 <constraint firstAttribute="width" constant="169" id="zHV-3G-aUY"/>
@@ -676,6 +675,7 @@
         <image name="InfoImage" width="102" height="102"/>
         <image name="RemoveImage" width="102" height="102"/>
         <image name="SearchImage" width="102" height="102"/>
+        <image name="TerrainAR_Logo_trans" width="256" height="256"/>
         <image name="UnlockedImage" width="102" height="102"/>
         <image name="closeImage" width="102" height="102"/>
     </resources>

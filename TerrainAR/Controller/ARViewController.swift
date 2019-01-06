@@ -21,7 +21,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
     @IBOutlet weak var lockUnlock: UILabel!
     
     private var hud :MBProgressHUD!
-    var ARcoordinatesArray: [CLLocationCoordinate2D]? = []
+    var ARcoordinatesArray: [CLLocationCoordinate2D] = []
     private var newAngleY :Float = 0.0
     private var currentAngleY :Float = 0.0
     private var localTranslatePosition :CGPoint!
@@ -40,48 +40,22 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         self.hud.label.text = "Detecting Plane..."
         
         
-        // Set the view's delegate
+        //Set the view's delegate
         sceneView.delegate = self
         
-        // Create a new scene
+        //Create a new scene
         let scene = SCNScene()
         
-        // Set the scene to the view
+        //Set the scene to the view
         sceneView.scene = scene
         
-        // Set locked button image
+        //Set locked button image
         let image = UIImage(named: "UnlockedImage")
         lockedButtonState.setImage(image, for: UIControl.State.normal)
         lockedButtonState.isSelected = false
         
         handleCoordinatesArray()
         registerGestureRecognizers()
-    }
-    
-    // Prepare coordinate array for TerrainNode
-    private func handleCoordinatesArray() {
-        
-        if !ARcoordinatesArray!.isEmpty {
-            
-            minLat = ARcoordinatesArray![0].latitude
-            minLong = ARcoordinatesArray![0].longitude
-
-            maxLat = ARcoordinatesArray![1].latitude
-            maxLong = ARcoordinatesArray![1].longitude
-            
-            // Organise min/max values
-            if minLat > maxLat {
-                let hold = minLat
-                minLat = maxLat
-                maxLat = hold
-            } else { }
-            
-            if minLong > maxLong {
-                let hold = minLong
-                minLong = maxLong
-                maxLong = hold
-            } else { }
-        }
     }
     
     // Set state of locked button
@@ -103,23 +77,56 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         
     }
     
-    //MARK: Create terrain node
+//MARK: Terrain node
+    
+    //Prepare coordinate array for TerrainNode
+    private func handleCoordinatesArray() {
+        
+        if !ARcoordinatesArray.isEmpty {
+            
+            minLat = ARcoordinatesArray[0].latitude
+            minLong = ARcoordinatesArray[0].longitude
+            
+            maxLat = ARcoordinatesArray[1].latitude
+            maxLong = ARcoordinatesArray[1].longitude
+            
+            // Organise min/max values
+            if minLat > maxLat {
+                let hold = minLat
+                minLat = maxLat
+                maxLat = hold
+            } else { }
+            
+            if minLong > maxLong {
+                let hold = minLong
+                minLong = maxLong
+                maxLong = hold
+            } else { }
+        }
+    }
+    
+    //Create terrain node
     private func addTerrainNode(from hitResult :ARHitTestResult) {
         
+        //Start loading animation widget
+        self.hud = MBProgressHUD.showAdded(to: self.sceneView, animated: true)
+        self.hud.label.text = "Loading data..."
+        
+        //Create terrain node
         let terrainNode = TerrainNode(minLat: minLat, maxLat: maxLat, minLon: minLong, maxLon: maxLong)
         terrainNode.name = "terrain"
         let scale = Float(0.333 * hitResult.distance) / terrainNode.boundingSphere.radius
         terrainNode.transform = SCNMatrix4MakeScale(scale, scale * scaleMult, scale)
         terrainNode.position = SCNVector3(hitResult.worldTransform.columns.3.x, hitResult.worldTransform.columns.3.y, hitResult.worldTransform.columns.3.z)
         
-        // set the material
+        //Set the material
         terrainNode.geometry?.materials = defaultMaterials()
         
-        // Remove any existing terrain node and add another one to the scene
+        //Remove any existing terrain node and add another one to the scene
         self.sceneView.scene.rootNode.childNodes.filter({ $0.name == "terrain" }).forEach({ $0.removeFromParentNode() })
         self.sceneView.scene.rootNode.addChildNode(terrainNode)
         
-        // Fetch terrain height and texture
+        //Fetch terrain height and texture
         terrainNode.fetchTerrainAndTexture(minWallHeight: 50.0,
                                     enableDynamicShadows: true,
                                             textureStyle: "mapbox/satellite-v9",
@@ -133,17 +140,28 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
                                         textureProgress: nil) { image, fetchError in
                                                 if let fetchError = fetchError {
                                                     NSLog("Texture load failed: \(fetchError.localizedDescription)")}
+                                            
+                                                DispatchQueue.main.async {
+                                                    self.hud.label.text = "Loading texture failed"
+                                                    self.hud.hide(animated: true, afterDelay: 1.0)
+                                            }
                                                 if image != nil {
+                                                    
+                                                    DispatchQueue.main.async {
+                                                        self.hud.label.text = "Completed"
+                                                        self.hud.hide(animated: true, afterDelay: 1.0)
+                                                    }
+                                                    
                                                     NSLog("Texture load complete")
                                                     
-                                                    // Add texture to node diffuse
+                                                    //Add texture to node diffuse
                                                     terrainNode.geometry?.materials[4].diffuse.contents = image
                                                 }
                                             }
         
     }
     
-    // Base Material for terrain
+    //Base Material for terrain
     private func defaultMaterials() -> [SCNMaterial] {
         let groundImage = SCNMaterial()
         groundImage.diffuse.contents = UIColor.darkGray
@@ -151,7 +169,6 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         
         let sideMaterial = SCNMaterial()
         sideMaterial.diffuse.contents = UIColor.darkGray
-        //TODO: Some kind of bug with the normals for sides where not having them double-sided has them not show up
         sideMaterial.isDoubleSided = true
         sideMaterial.name = "Side"
         
@@ -162,7 +179,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         return [sideMaterial, sideMaterial, sideMaterial, sideMaterial, groundImage, bottomMaterial]
     }
     
-    //MARK: Gestures
+//MARK: Gesture Recognizers
     private func registerGestureRecognizers() {
         
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapped))
@@ -180,7 +197,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         
     }
     
-    // Long Pressed - Drag node
+    //Long Pressed - Drag node
     @objc func longPressed(recognizer :UILongPressGestureRecognizer) {
         
         if lockedButtonState.isSelected == false {
@@ -210,7 +227,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
 
     }
     
-    // Panned gesture - Rotate node
+    //Panned gesture - Rotate node
     @objc func panned(recognizer :UIPanGestureRecognizer) {
 
         if lockedButtonState.isSelected == false {
@@ -239,7 +256,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         }
     }
 
-    // Pinched gesture - Scale node
+    //Pinched gesture - Scale node
     @objc func pinched(recognizer :UIPinchGestureRecognizer) {
         
         if lockedButtonState.isSelected == false {
@@ -267,7 +284,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         }
     }
     
-    // Tapped gesture - Add node
+    //Tapped gesture - Add node
     @objc func tapped(recognizer :UIGestureRecognizer) {
         
         if lockedButtonState.isSelected == false {
@@ -283,39 +300,40 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         }
     }
     
-    //MARK: HUD progress handler
+//MARK: HUD progress handler
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         
         if anchor is ARPlaneAnchor {
             
             DispatchQueue.main.async {
                 
-                self.hud.label.text = "Plane Detected"
-                self.hud.hide(animated: true, afterDelay: 1.0)
+                self.hud.label.text = "Tap screen to place terrain"
+                self.hud.hide(animated: true, afterDelay: 2.0)
                 self.sceneView.debugOptions = []
             }
         }
         
     }
     
-//    func renderer(_ renderer: SCNSceneRenderer, willRenderScene scene: SCNScene, atTime time: TimeInterval) {
-//
-//
-//    }
+//MARK: Prepare for segue
     
-    //MARK: Prepare for segue
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        // Check View Controller desination
+        //Check View Controller desination
         if segue.destination is TableViewController {
             
             let vcTV = segue.destination as? TableViewController
-            if !ARcoordinatesArray!.isEmpty {
-                vcTV?.favCoordinatesArray = ARcoordinatesArray!
-            } else {return}
+            guard !ARcoordinatesArray.isEmpty else {return}
+            vcTV?.favCoordinatesArray = ARcoordinatesArray
+        
+        }else if segue.destination is MapViewController {
+            
+            let vcMK = segue.destination as? MapViewController
+            guard !ARcoordinatesArray.isEmpty else {return}
+            vcMK?.placeHolderCoordsArray = ARcoordinatesArray
         }
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
