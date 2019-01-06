@@ -53,7 +53,7 @@ class MapViewController: UIViewController {
         
         if !dontShowAlert {
             
-            let alertVC = UIAlertController(title: "To use", message: "Tap screen to place two pins", preferredStyle: .alert)
+            let alertVC = UIAlertController(title: "To use", message: "Tap screen to place coordinates, maximum two", preferredStyle: .alert)
             let ShowAction = UIAlertAction(title: "Okay", style: .default, handler: nil)
             let dontShowAction = UIAlertAction(title: "Dont show again", style: .default, handler: {action in self.dontShowAlert()})
             alertVC.addAction(ShowAction)
@@ -173,7 +173,7 @@ class MapViewController: UIViewController {
             //Create alertVC if coordinatesArray < 2
             if coordinatesArray.count < 2 {
                 
-                let alertVC = UIAlertController(title: "Wait", message: "You need to place two pins first", preferredStyle: .alert)
+                let alertVC = UIAlertController(title: "Wait", message: "You need to place coordinates first, maximum two", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "Okay", style: .default, handler: nil)
                 alertVC.addAction(okAction)
                 self.present(alertVC, animated: true, completion: nil)
